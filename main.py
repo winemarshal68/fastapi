@@ -9,7 +9,13 @@ GITHUB_BRANCH = "main"
 def push_to_github(path, message, content):
     """Commit a file to your GitHub repo."""
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
-    headers = {"Authorization": f"token {os.environ['GH_TOKEN']}"}
+    import os
+
+GH_TOKEN = os.getenv("GH_TOKEN", None)
+if not GH_TOKEN:
+    GH_TOKEN = "missing_token"
+
+headers = {"Authorization": f"token {GH_TOKEN}"}
     b64content = base64.b64encode(content.encode()).decode()
     payload = {"message": message, "content": b64content, "branch": GITHUB_BRANCH}
     r = requests.put(url, headers=headers, json=payload)
